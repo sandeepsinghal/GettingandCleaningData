@@ -15,15 +15,22 @@ makeTidySet <- function(dir) {
     featureSubset <- featureSubsetTable[,1]
     featureHeaders <- featureSubsetTable[,2]
 
-    testX <- read.table(paste(dir, "test", "X_test.txt", sep="/"))
-    testXExtracted <- testX[, featureSubset]
-    activites <- read.table(paste(dir, "test", "y_test.txt", sep="/"))
-    activityDesc <- join(activites, activityLabels)[,2]
+    dataTest <- extractData (dir, "test", "X_test.txt", featureSubset, featureHeaders, activityLabels)
     
-    data <- cbind(testXExtracted, activityDesc)
     columnHeadings <- append (as.character(featureHeaders), c("Activity"))
     
-    names(data) <- columnHeadings
-    write.table(data, file = "./tidy_data.txt")
+    names(dataTest) <- columnHeadings
+    write.table(dataTest, file = "./tidy_data.txt")
 }
 
+extractData <- function (dir, subdir, filename, featureSubset, featureHeaders, activityLabels) {
+    
+    testX <- read.table(paste(dir, subdir, filename, sep="/"))
+    testXExtracted <- testX[, featureSubset]
+    activityFileName <- paste("y_", subdir, ".txt", sep="")
+    activites <- read.table(paste(dir, subdir, activityFileName, sep="/"))
+    activityDesc <- join(activites, activityLabels)[,2]
+    data <- cbind(testXExtracted, activityDesc)
+    
+    return(data)
+}
