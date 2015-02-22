@@ -16,11 +16,13 @@ makeTidySet <- function(dir) {
     featureHeaders <- featureSubsetTable[,2]
 
     dataTest <- extractData (dir, "test", "X_test.txt", featureSubset, featureHeaders, activityLabels)
+    dataTrain <- extractData (dir, "train", "X_train.txt", featureSubset, featureHeaders, activityLabels)
+
+    data <- rbind (dataTest, dataTrain)
     
     columnHeadings <- append (as.character(featureHeaders), c("Activity"))
-    
-    names(dataTest) <- columnHeadings
-    write.table(dataTest, file = "./tidy_data.txt")
+    names(data) <- columnHeadings
+    write.table(data, file = "./tidy_data.txt")
 }
 
 extractData <- function (dir, subdir, filename, featureSubset, featureHeaders, activityLabels) {
